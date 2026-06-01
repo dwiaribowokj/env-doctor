@@ -1,6 +1,13 @@
 # env-doctor
 
+[![CI](https://github.com/dwiaribowokj/env-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/dwiaribowokj/env-doctor/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 Safe CLI checker for `.env` files. It finds missing keys, duplicate keys, empty values, invalid URL-like values, and weak-looking secrets **without printing secret values**.
+
+## Why
+
+Environment bugs are annoying: missing variables, typoed keys, invalid URLs, and accidentally weak secrets usually fail late. `env-doctor` catches the common stuff early while keeping secret values out of terminal logs and CI output.
 
 ## Usage
 
@@ -9,11 +16,37 @@ npm install -g env-doctor
 env-doctor --env .env --example .env.example
 ```
 
+Local development:
+
+```bash
+npm install
+npm run build
+node dist/cli.js --env examples/.env.example
+```
+
+## Example output
+
+```txt
+Env Doctor
+i Loaded 3 variables from examples/.env.example
+! Possible weak secret length: JWT_SECRET
+```
+
+## Features
+
+- Static dotenv parsing; no user config execution.
+- Compare `.env` against `.env.example`.
+- Detect duplicate keys.
+- Detect empty values.
+- Validate URL-like keys.
+- Warn on weak-looking secret values without displaying them.
+- `--strict` can fail on warnings for CI.
+
 ## Safety
 
 - Secret values are never printed.
 - `.env` files are ignored by default.
-- `--strict` exits non-zero on warnings.
+- Generated reports should not contain secret values.
 
 ## Development
 
@@ -21,6 +54,7 @@ env-doctor --env .env --example .env.example
 npm install
 npm run build
 npm test
+npm audit --audit-level=high
 ```
 
 ## Contributing
@@ -34,4 +68,3 @@ This project uses the [MIT License](./LICENSE), which means you can use, copy, m
 - Bug reports: use the GitHub issue template.
 - Feature ideas: keep them small, practical, and safe by default.
 - Security issues: please follow [SECURITY.md](./SECURITY.md).
-
