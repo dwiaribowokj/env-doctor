@@ -2,12 +2,13 @@ import { Command } from 'commander';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { parse } from 'dotenv';
-import { exitCodeFromFindings, Finding, printFindings } from './output.js';
+import { exitCodeFromFindings, Finding, printFindings, printJson } from './output.js';
 
 interface EnvOptions {
   env: string;
   example?: string;
   strict: boolean;
+  json: boolean;
 }
 
 const SECRET_HINTS = [/secret/i, /token/i, /password/i, /passwd/i, /api[_-]?key/i, /private/i];
@@ -80,11 +81,16 @@ export function envDoctorCommand(): Command {
     .option('-e, --env <path>', 'env file path', '.env')
     .option('-x, --example <path>', 'example env file path, e.g. .env.example')
     .option('--strict', 'exit non-zero on warnings too', false)
+    .option('--json', 'print machine-readable JSON output', false)
     .action((options: EnvOptions) => {
       const envPath = resolve(options.env);
       const examplePath = options.example ? resolve(options.example) : undefined;
       const findings = analyzeEnv(envPath, examplePath);
-      printFindings('Env Doctor', findings);
+      if (options.json) {
+        printJson('Env Doctor', findings, { envPath, examplePath });
+      } else {
+        printFindings('Env Doctor', findings);
+      }
       const hasWarn = findings.some((f) => f.level === 'warn');
       process.exitCode = options.strict && hasWarn ? 1 : exitCodeFromFindings(findings);
     });

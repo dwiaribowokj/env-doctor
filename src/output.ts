@@ -23,3 +23,12 @@ export function printFindings(title: string, findings: Finding[]): void {
 export function exitCodeFromFindings(findings: Finding[]): number {
   return findings.some((f) => f.level === 'error') ? 1 : 0;
 }
+
+
+export function findingsToJson(title: string, findings: Finding[], extra: Record<string, unknown> = {}): string {
+  return JSON.stringify({ title, findings, ...extra }, null, 2);
+}
+
+export function printJson(title: string, findings: Finding[], extra: Record<string, unknown> = {}): void {
+  console.log(findingsToJson(title, findings, extra));
+}

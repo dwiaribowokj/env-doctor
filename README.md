@@ -14,6 +14,7 @@ Environment bugs are annoying: missing variables, typoed keys, invalid URLs, and
 ```bash
 npm install -g env-doctor
 env-doctor --env .env --example .env.example
+env-doctor --env .env --example .env.example --json
 ```
 
 Local development:
@@ -41,6 +42,8 @@ i Loaded 3 variables from examples/.env.example
 - Validate URL-like keys.
 - Warn on weak-looking secret values without displaying them.
 - `--strict` can fail on warnings for CI.
+
+- Machine-readable `--json` output for CI and automation.
 
 ## Safety
 
